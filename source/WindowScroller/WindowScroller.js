@@ -139,18 +139,20 @@ export default class WindowScroller extends React.PureComponent<Props, State> {
     const {scrollElement} = this.props;
     const {scrollElement: prevScrollElement} = prevProps;
 
-    if (
-      prevScrollElement !== scrollElement &&
-      prevScrollElement != null &&
-      scrollElement != null
-    ) {
-      this.updatePosition(scrollElement);
+    if (prevScrollElement !== scrollElement) {
+      if (prevScrollElement) {
+        unregisterScrollListener(this, prevScrollElement);
 
-      unregisterScrollListener(this, prevScrollElement);
-      registerScrollListener(this, scrollElement);
+        this._unregisterResizeListener(prevScrollElement);
+      }
 
-      this._unregisterResizeListener(prevScrollElement);
-      this._registerResizeListener(scrollElement);
+      if (scrollElement) {
+        this.updatePosition(scrollElement);
+
+        registerScrollListener(this, scrollElement);
+
+        this._registerResizeListener(scrollElement);
+      }
     }
   }
 
